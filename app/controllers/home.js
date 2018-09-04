@@ -1,25 +1,26 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
-const Article = mongoose.model('Article');
+const Post = mongoose.model('Post');
 
 module.exports = (app) => {
   app.use('/', router);
 };
 
 router.get('/', (req, res, next) => {
-  Article.find((err, articles) => {
+  Post.find().populate('author').populate('category').exec((err, posts) => {
+    // return res.jsonp(posts)
     if (err) return next(err);
     res.render('blog/index', {
       title: 'Node Blog Home',
-      articles: articles,
+      posts: posts,
       pretty: true
     });
   });
 });
 
 router.get('/about', (req, res, next) => {
-  Article.find((err, articles) => {
+  Post.find((err, posts) => {
     if (err) return next(err);
     res.render('blog/index', {
       title: 'About me',
@@ -29,7 +30,7 @@ router.get('/about', (req, res, next) => {
 });
 
 router.get('/contact', (req, res, next) => {
-  Article.find((err, articles) => {
+  Post.find((err, posts) => {
     if (err) return next(err);
     res.render('blog/index', {
       title: 'Contact me',
